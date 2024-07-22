@@ -2,6 +2,7 @@ import pygame
 from pygame import Rect
 import constants as c
 import time
+import itertools
 
 
 class Snake:
@@ -15,48 +16,67 @@ class Snake:
     def __init__(self, length: int = 11, position=(300, 300), direction=DIRECTION_RIGHT):
         self._body: list[Rect] = []
         self._validate_direction(direction)
-        self.length = length
+        self._length = length
         self._direction = direction
         self._create_snake(position[0], position[1])
-        self.last_time = time.time()
+        self._last_time = time.time()
 
     def get_body(self):
-        seconds = int(time.time() - self.last_time)
+        seconds = int(time.time() - self._last_time) * 1
 
         if seconds == 0:  # changer nothing
             return self._body
 
-        value = seconds * c.SNAKE_BODY_PIECE_SIZE
         x, y = [0, 0]
-
         match self._direction:
             case self.DIRECTION_UP:
-                y = -value
+                y = -c.SNAKE_BODY_PIECE_SIZE
             case self.DIRECTION_DOWN:
-                y = value
+                y = c.SNAKE_BODY_PIECE_SIZE
             case self.DIRECTION_LEFT:
-                x = -value
+                x = -c.SNAKE_BODY_PIECE_SIZE
             case self.DIRECTION_RIGHT:
-                x = value
+                x = c.SNAKE_BODY_PIECE_SIZE
             case _:
                 ValueError(f"Invalid direction '{self._direction}'")
 
-        position = len(self._body)
-        for _ in range(len(self._body) - 1, -1, -1):  # loop from tail to head
-            position = position - 1
-            if position == 0:  # is header
-                self._body[position].move_ip(x, y)
-            else:
-                self._body[position].topleft = (self._body[position - 1].x, self._body[position - 1].y)
+        for _ in range(seconds):
+            position = len(self._body)
+            for _ in range(len(self._body) - 1, -1, -1):  # loop from tail to head
+                position = position - 1
+                if position == 0:  # is header
+                    self._body[position].move_ip(x, y)
+                else:
+                    self._body[position].topleft = (self._body[position - 1].x, self._body[position - 1].y)
 
-        self.last_time = time.time()
+            if self.snake_intersection():
+                pass  # TODO: game over
+
+        self._last_time = time.time()
 
         return self._body
 
     def set_direction(self, direction):
         self._validate_direction(direction)
+
+        common_and_pretend = sorted([self._direction, direction])
+        mutually_exclusive = [
+            sorted([self.DIRECTION_UP, self.DIRECTION_DOWN]),
+            sorted([self.DIRECTION_LEFT, self.DIRECTION_RIGHT]),
+        ]
+
+        for pair in mutually_exclusive:
+            if common_and_pretend == pair:
+                return  # can't switch up -> down, down -> up, ...
+
         self._direction = direction
         print(direction)
+
+    def snake_intersection(self)-> bool:
+        for rect1, rect2 in itertools.combinations(self._body, 2):
+            if rect1.colliderect(rect2):
+                return True
+        return False
 
     def _create_snake(self, head_x, head_y):
         self._body = [
@@ -65,7 +85,7 @@ class Snake:
 
         loop_x, loop_y = [head_x, head_y]
 
-        for _ in range(self.length - 1):
+        for _ in range(self._length - 1):
             match self._direction:
                 case self.DIRECTION_UP:
                     loop_y = loop_y + c.SNAKE_BODY_PIECE_SIZE
