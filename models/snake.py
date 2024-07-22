@@ -11,7 +11,7 @@ class Snake:
     DIRECTION_LEFT = 'left'
     DIRECTION_RIGHT = 'right'
 
-    BODY_SIZE = c.SNAKE_BODY_PIECE_SIZE
+    PIECE_SIZE = c.SNAKE_BODY_PIECE_SIZE
 
     def __init__(self, length: int = 11, position=(300, 300), direction=DIRECTION_RIGHT):
         self._body: list[Rect] = []
@@ -22,25 +22,25 @@ class Snake:
         self._last_time = time.time()
 
     def get_body(self):
-        seconds = int(time.time() - self._last_time) * 1
+        steps = int(time.time() - self._last_time) * 1
 
-        if seconds == 0:  # changer nothing
+        if steps == 0:  # changer nothing
             return self._body
 
         x, y = [0, 0]
         match self._direction:
             case self.DIRECTION_UP:
-                y = -c.SNAKE_BODY_PIECE_SIZE
+                y = -self.PIECE_SIZE
             case self.DIRECTION_DOWN:
-                y = c.SNAKE_BODY_PIECE_SIZE
+                y = self.PIECE_SIZE
             case self.DIRECTION_LEFT:
-                x = -c.SNAKE_BODY_PIECE_SIZE
+                x = -self.PIECE_SIZE
             case self.DIRECTION_RIGHT:
-                x = c.SNAKE_BODY_PIECE_SIZE
+                x = self.PIECE_SIZE
             case _:
                 ValueError(f"Invalid direction '{self._direction}'")
 
-        for _ in range(seconds):
+        for _ in range(steps):
             position = len(self._body)
             for _ in range(len(self._body) - 1, -1, -1):  # loop from tail to head
                 position = position - 1
@@ -88,13 +88,13 @@ class Snake:
         for _ in range(self._length - 1):
             match self._direction:
                 case self.DIRECTION_UP:
-                    loop_y = loop_y + c.SNAKE_BODY_PIECE_SIZE
+                    loop_y = loop_y + self.PIECE_SIZE
                 case self.DIRECTION_DOWN:
-                    loop_y = loop_y - c.SNAKE_BODY_PIECE_SIZE
+                    loop_y = loop_y - self.PIECE_SIZE
                 case self.DIRECTION_LEFT:
-                    loop_x = loop_x + c.SNAKE_BODY_PIECE_SIZE
+                    loop_x = loop_x + self.PIECE_SIZE
                 case self.DIRECTION_RIGHT:
-                    loop_x = loop_x - c.SNAKE_BODY_PIECE_SIZE
+                    loop_x = loop_x - self.PIECE_SIZE
                 case _:
                     ValueError(f"Invalid direction '{self._direction}'")
 
@@ -103,7 +103,7 @@ class Snake:
             )
 
     def _get_new_snake_piece(self, x, y):
-        return Rect(x, y, self.BODY_SIZE, self.BODY_SIZE)
+        return Rect(x, y, self.PIECE_SIZE, self.PIECE_SIZE)
 
     def _validate_direction(self, direction):
         if direction not in [self.DIRECTION_UP, self.DIRECTION_DOWN, self.DIRECTION_LEFT, self.DIRECTION_RIGHT]:
