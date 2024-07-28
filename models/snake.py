@@ -15,7 +15,7 @@ class Snake:
 
     def __init__(self, length: int = 11, position=(300, 300), direction=DIRECTION_RIGHT):
         self._body: list[Rect] = []
-        self._validate_direction(direction)
+        self.__validate_direction(direction)
         self._length = length
         self._direction = direction
         self._create_snake(position[0], position[1])
@@ -41,7 +41,7 @@ class Snake:
                 ValueError(f"Invalid direction '{self._direction}'")
 
         for _ in range(steps):
-            position = len(self._body)
+            position = len(self._body) # TODO: need to edit logic and move tail piece (to head) only
             for _ in range(len(self._body) - 1, -1, -1):  # loop from tail to head
                 position = position - 1
                 if position == 0:  # is header
@@ -57,7 +57,7 @@ class Snake:
         return self._body
 
     def set_direction(self, direction):
-        self._validate_direction(direction)
+        self.__validate_direction(direction)
 
         common_and_pretend = sorted([self._direction, direction])
         mutually_exclusive = [
@@ -72,15 +72,21 @@ class Snake:
         self._direction = direction
         print(direction)
 
-    def snake_intersection(self)-> bool:
-        for rect1, rect2 in itertools.combinations(self._body, 2):
-            if rect1.colliderect(rect2):
+    def snake_intersection(self) -> bool:
+
+        head = self._body[0]
+        for i in range(1, len(self._body)):
+            if head.colliderect(self._body[i]):
                 return True
+
+        # for rect1, rect2 in itertools.combinations(self._body, 2):
+        #     if rect1.colliderect(rect2):
+        #         return True
         return False
 
     def _create_snake(self, head_x, head_y):
         self._body = [
-            self._get_new_snake_piece(head_x, head_y)
+            self.__get_new_snake_piece(head_x, head_y)
         ]
 
         loop_x, loop_y = [head_x, head_y]
@@ -99,13 +105,13 @@ class Snake:
                     ValueError(f"Invalid direction '{self._direction}'")
 
             self._body.append(
-                self._get_new_snake_piece(loop_x, loop_y)
+                self.__get_new_snake_piece(loop_x, loop_y)
             )
 
-    def _get_new_snake_piece(self, x, y):
+    def __get_new_snake_piece(self, x, y):
         return Rect(x, y, self.PIECE_SIZE, self.PIECE_SIZE)
 
-    def _validate_direction(self, direction):
+    def __validate_direction(self, direction):
         if direction not in [self.DIRECTION_UP, self.DIRECTION_DOWN, self.DIRECTION_LEFT, self.DIRECTION_RIGHT]:
             raise ValueError(f"Invalid direction '{direction}'")
 
