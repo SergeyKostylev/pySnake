@@ -1,8 +1,10 @@
 import pygame
 from pygame import Rect
-import constants as c
+import configuration as c
 import time
 import itertools
+
+from exceptions.exceptions import GameOverException
 
 
 class Snake:
@@ -18,11 +20,11 @@ class Snake:
         self.__validate_direction(direction)
         self._length = length
         self._direction = direction
-        self._create_snake(position[0], position[1])
+        self.__create_snake(position[0], position[1])
         self._last_time = time.time()
 
     def get_body(self):
-        steps = int(time.time() - self._last_time) * 1
+        steps = int(time.time() - self._last_time)
 
         if steps == 0:  # changer nothing
             return self._body
@@ -50,6 +52,7 @@ class Snake:
                     self._body[position].topleft = (self._body[position - 1].x, self._body[position - 1].y)
 
             if self.snake_intersection():
+                # raise GameOverException()
                 pass  # TODO: game over
 
         self._last_time = time.time()
@@ -84,7 +87,7 @@ class Snake:
         #         return True
         return False
 
-    def _create_snake(self, head_x, head_y):
+    def __create_snake(self, head_x, head_y):
         self._body = [
             self.__get_new_snake_piece(head_x, head_y)
         ]
