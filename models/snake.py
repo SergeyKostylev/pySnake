@@ -13,7 +13,7 @@ class Snake:
     DIRECTION_LEFT = 'left'
     DIRECTION_RIGHT = 'right'
 
-    PIECE_SIZE = c.SNAKE_BODY_PIECE_SIZE
+    PIECE_SIZE = c.FIELD_POINT_SIZE
 
     def __init__(self, length: int = 3, position=(300, 300), direction=DIRECTION_RIGHT):
         self.__body: list[Rect] = []
