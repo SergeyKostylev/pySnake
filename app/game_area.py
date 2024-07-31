@@ -33,7 +33,7 @@ class GameArea:
         snake_field_center_position = self.__snake_field.get_center_point()
 
         snake_field_center_position = (  # TODO: remove after testing FOR
-            snake_field_center_position[0] + 100,
+            snake_field_center_position[0] + 120,
             snake_field_center_position[1]
         )
 

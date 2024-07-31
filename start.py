@@ -44,7 +44,7 @@ def render(game_area: GameArea):
 
     pygame.draw.rect(screen, c.SNAKE_FIELD_COLOR, snake_field.field)
 
-    for rec in snake.get_body():
+    for rec in snake.body:
         pygame.draw.rect(screen, c.SNAKE_COLOR, rec)
 
     pygame.display.flip()
