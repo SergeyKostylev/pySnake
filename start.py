@@ -34,6 +34,8 @@ def update(game_area: GameArea):
         if command is not None:
             snake.set_direction(command)
 
+    game_area.check_updates()
+
     keydown_event.clear()
 
 
@@ -43,6 +45,7 @@ def render(game_area: GameArea):
     screen.fill(c.SCREEN_BACKGROUND_COLOR)
 
     pygame.draw.rect(screen, c.SNAKE_FIELD_COLOR, snake_field.field)
+    pygame.draw.rect(screen, c.TARGET_COLOR, target.body)
 
     for rec in snake.body:
         pygame.draw.rect(screen, c.SNAKE_COLOR, rec)
@@ -64,4 +67,5 @@ def run():
 
 
 if __name__ == '__main__':
+
     run()
