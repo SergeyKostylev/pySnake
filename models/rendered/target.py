@@ -1,13 +1,19 @@
+import pygame
 from pygame import Rect
+import configuration as c
 
 import configuration
+from models.rendered.base_rendered_model import BaseRenderedModel
 
 
-class Target:
+class Target(BaseRenderedModel):
     TARGET_SIZE = configuration.FIELD_POINT_SIZE
 
     def __init__(self, x, y):
         self.__body = Rect(x, y, self.TARGET_SIZE, self.TARGET_SIZE)
+
+    def render(self, screen):
+        pygame.draw.rect(screen, c.TARGET_COLOR, self.__body)
 
     @property
     def body(self):

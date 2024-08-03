@@ -1,13 +1,14 @@
+import copy
+
 import pygame
 from pygame import Rect
 import configuration as c
 import time
-import itertools
 
-from exceptions.exceptions import GameOverException
+from models.rendered.base_rendered_model import BaseRenderedModel
 
 
-class Snake:
+class Snake(BaseRenderedModel):
     DIRECTION_UP = 'up'
     DIRECTION_DOWN = 'down'
     DIRECTION_LEFT = 'left'
@@ -22,13 +23,23 @@ class Snake:
         self.__direction = direction
         self.__create_snake(position[0], position[1])
         self.__last_time = time.time()
+        self.speed_coefficient = 3
+
+    def render(self, screen: pygame.Surface):
+        for rec in self.__body:
+            pygame.draw.rect(screen, c.SNAKE_COLOR, rec)
+
+    def grow(self):
+        self.__body.append(
+            copy.deepcopy(self.__body[-1])
+        )
 
     @property
     def length(self):
         return self.__length
     @property
     def body(self):
-        steps = int(time.time() - self.__last_time)
+        steps = int((time.time() - self.__last_time) * self.speed_coefficient)
 
         if steps == 0:  # changer nothing
             return self.__body
@@ -47,17 +58,10 @@ class Snake:
                 ValueError(f"Invalid direction '{self.__direction}'")
 
         for _ in range(steps):
-            position = len(self.__body) # TODO: need to edit logic and move tail piece (to head) only
-            for _ in range(len(self.__body) - 1, -1, -1):  # loop from tail to head
-                position = position - 1
-                if position == 0:  # is header
-                    self.__body[position].move_ip(x, y)
-                else:
-                    self.__body[position].topleft = (self.__body[position - 1].x, self.__body[position - 1].y)
-
-            if self.snake_intersection():
-                # raise GameOverException()
-                pass  # TODO: game over
+            tail = self.__body.pop()
+            tail.x = self.__body[0].x + x
+            tail.y = self.__body[0].y + y
+            self.__body.insert(0, tail)
 
         self.__last_time = time.time()
 
@@ -80,15 +84,11 @@ class Snake:
         print(direction)
 
     def snake_intersection(self) -> bool:
-
         head = self.__body[0]
         for i in range(1, len(self.__body)):
             if head.colliderect(self.__body[i]):
                 return True
 
-        # for rect1, rect2 in itertools.combinations(self._body, 2):
-        #     if rect1.colliderect(rect2):
-        #         return True
         return False
 
     def __create_snake(self, head_x, head_y):
