@@ -1,3 +1,5 @@
+from exceptions.exceptions import ConfigValueException
+
 
 SCREEN_SIZE = (500, 500)
 SNAKE_FIELD_SIZE = (300, 300)
@@ -14,3 +16,22 @@ KEY_UP = 'UP'
 KEY_DOWN = 'DOWN'
 KEY_LEFT = 'LEFT'
 KEY_RIGHT = 'RIGHT'
+
+
+def validate_configuration() -> None:
+    screen_size = SCREEN_SIZE
+    snake_field_size = SNAKE_FIELD_SIZE
+    if screen_size[0] <= snake_field_size[0]:
+        raise ConfigValueException("Screen width must be greater than snake field width.")
+    if screen_size[1] <= snake_field_size[1]:
+        raise ConfigValueException("Screen height must be greater than snake field height.")
+
+    sizes = {
+        "Screen width": screen_size[0],
+        "Screen height": screen_size[1],
+        "Snake field width": snake_field_size[0],
+        "Snake field height": snake_field_size[1],
+    }
+    for param, value in sizes.items():
+        if value % FIELD_POINT_SIZE != 0:
+            raise ConfigValueException(f"Invalid '{param}' value '{value}'.")

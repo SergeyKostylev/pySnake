@@ -2,14 +2,12 @@ import pygame
 import configuration as const
 from models.snake import Snake
 from models.snake_field import SnakeField
-from exceptions.exceptions import ConfigValueException
 from models.target import Target
 import random
 
 
 class GameArea:
     def __init__(self):
-        self.__validate_config()
         self.__snake_field = self.__get_snake_field()
         self.__screen = pygame.display.set_mode(const.SCREEN_SIZE)
         self.__snake = self.__build_snake()
@@ -81,12 +79,4 @@ class GameArea:
         return SnakeField(const.SNAKE_FIELD_SIZE[0], const.SNAKE_FIELD_SIZE[1], x, y)
 
     # TODO: move from class
-    def __validate_config(self) -> None:
-        screen_size = const.SCREEN_SIZE
-        snake_field_size = const.SNAKE_FIELD_SIZE
-        if screen_size[0] <= snake_field_size[0]:
-            raise ConfigValueException("Screen width must be greater than snake field width")
-        if screen_size[1] <= snake_field_size[1]:
-            raise ConfigValueException("Screen height must be greater than snake field height")
 
-        # TODO: check snake_field_size % SNAKE_BODY_PIECE_SIZE = 0

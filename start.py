@@ -3,10 +3,8 @@ import configuration as c
 import sys
 from app.game_area import GameArea
 
-pygame.init()
 
 keydown_event = []
-
 
 def processInput():
     for event in pygame.event.get():
@@ -67,5 +65,7 @@ def run():
 
 
 if __name__ == '__main__':
+    c.validate_configuration()
 
+    pygame.init()
     run()
