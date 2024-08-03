@@ -27,8 +27,6 @@ def validate_configuration() -> None:
         raise ConfigValueException("Screen height must be greater than snake field height.")
 
     sizes = {
-        "Screen width": screen_size[0],
-        "Screen height": screen_size[1],
         "Snake field width": snake_field_size[0],
         "Snake field height": snake_field_size[1],
     }

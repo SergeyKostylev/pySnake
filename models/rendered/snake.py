@@ -21,7 +21,7 @@ class Snake(BaseRenderedModel):
         self.__validate_direction(direction)
         self.__length = length
         self.__direction = direction
-        self.__create_snake(position[0], position[1])
+        self.__create_body(position[0], position[1])
         self.__last_time = time.time()
         self.speed_coefficient = 3
 
@@ -91,7 +91,7 @@ class Snake(BaseRenderedModel):
 
         return False
 
-    def __create_snake(self, head_x, head_y):
+    def __create_body(self, head_x, head_y):
         self.__body = [
             self.__get_new_snake_piece(head_x, head_y)
         ]

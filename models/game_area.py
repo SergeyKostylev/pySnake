@@ -36,7 +36,6 @@ class GameArea:
             self.__snake.speed_coefficient += 0.7
             print(self.__snake.speed_coefficient)
 
-            # TODO: speed up
             self.recreate_target()
 
         if not head.colliderect(self.__snake_field.field):  # snake outside field
