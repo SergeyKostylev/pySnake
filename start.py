@@ -1,7 +1,10 @@
 import pygame
+
 import configuration as c
 import sys
-from app.game_area import GameArea
+
+from app.render import Render
+from models.game_area import GameArea
 
 
 keydown_event = []
@@ -33,39 +36,28 @@ def update(game_area: GameArea):
             snake.set_direction(command)
 
     game_area.check_updates()
+    game_over = game_area.game_over
+
+    # if game_over:
 
     keydown_event.clear()
 
 
-def render(game_area: GameArea):
-    screen, snake_field, snake, target = game_area.get_all_entities()
-
-    screen.fill(c.SCREEN_BACKGROUND_COLOR)
-
-    pygame.draw.rect(screen, c.SNAKE_FIELD_COLOR, snake_field.field)
-    pygame.draw.rect(screen, c.TARGET_COLOR, target.body)
-
-    for rec in snake.body:
-        pygame.draw.rect(screen, c.SNAKE_COLOR, rec)
-
-    pygame.display.flip()
-    # pygame.display.update()
-    # print(keydown_event)
-
-    pass
-
 
 def run():
+    screen = pygame.display.set_mode(c.SCREEN_SIZE)
     game_area = GameArea()
+    render = Render(game_area, screen)
 
     while True:
         processInput()
         update(game_area)
-        render(game_area)
+        render.render()
 
 
 if __name__ == '__main__':
     c.validate_configuration()
+
 
     pygame.init()
     run()

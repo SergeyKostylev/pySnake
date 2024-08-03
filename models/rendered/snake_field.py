@@ -1,10 +1,19 @@
+import pygame
 from pygame import Rect
+import configuration as c
 
 
-class SnakeField:
+from models.rendered.base_rendered_model import BaseRenderedModel
+
+
+class SnakeField(BaseRenderedModel):
 
     def __init__(self, width: int, height: int,  x: int, y: int):
         self.__field = Rect(x, y, width, height)
+
+    def render(self, screen):
+        pygame.draw.rect(screen, c.SNAKE_FIELD_COLOR, self.__field)
+
 
     @property
     def field(self) -> Rect:

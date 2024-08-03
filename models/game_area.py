@@ -1,34 +1,46 @@
 import pygame
 import configuration as const
-from models.snake import Snake
-from models.snake_field import SnakeField
-from models.target import Target
+from models.running_game_statistics import RunningGameStatistics
+from models.rendered.snake import Snake
+from models.rendered.snake_field import SnakeField
+from models.rendered.target import Target
 import random
 
 
 class GameArea:
     def __init__(self):
-        self.__snake_field = self.__get_snake_field()
-        self.__screen = pygame.display.set_mode(const.SCREEN_SIZE)
+        self.__snake_field = self.__build_snake_field()
         self.__snake = self.__build_snake()
         self.__target = self.recreate_target()
+        self.__statistics = RunningGameStatistics()
+        self.__game_over = False
 
     def get_all_entities(self):
-        return self.__screen, self.__snake_field, self.__snake, self.__target
+        return self.__snake_field, self.__snake, self.__target
 
     @property
     def snake(self):
         return self.__snake
 
+    @property
+    def game_over(self):
+        return self.__game_over
 
-
-    def check_updates(self) -> bool:
+    def check_updates(self) -> None:
         head = self.__snake.body[0]
 
-        if head.colliderect(self.__target.body):
+        if head.colliderect(self.__target.body):  # snake head on target position
+            self.__statistics.add_eat_target()
+            # TODO: grow snake
             # TODO: add game points
             # TODO: speed up
             self.recreate_target()
+
+        if not head.colliderect(self.__snake_field.field):  # snake outside field
+            self.__game_over = True
+
+        if self.__snake.snake_intersection():
+            self.__game_over = True
 
     def recreate_target(self) -> Target:
         ramdom_empy_point = random.choice(self.__get_empy_field_points())
@@ -69,7 +81,7 @@ class GameArea:
 
         return empty_filed_points
 
-    def __get_snake_field(self) -> SnakeField:
+    def __build_snake_field(self) -> SnakeField:
         screen_size = const.SCREEN_SIZE
         field_size = const.SNAKE_FIELD_SIZE
         # x = (screen_size[0] - field_size[0]) // 2
@@ -77,6 +89,3 @@ class GameArea:
         y = (screen_size[1] - field_size[1]) // 2
 
         return SnakeField(const.SNAKE_FIELD_SIZE[0], const.SNAKE_FIELD_SIZE[1], x, y)
-
-    # TODO: move from class
-
