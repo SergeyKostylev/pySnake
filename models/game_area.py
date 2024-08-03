@@ -31,8 +31,11 @@ class GameArea:
 
         if head.colliderect(self.__target.body):  # snake head on target position
             self.__statistics.add_eat_target()
-            # TODO: grow snake
-            # TODO: add game points
+            self.__snake.grow()
+
+            self.__snake.speed_coefficient += 0.7
+            print(self.__snake.speed_coefficient)
+
             # TODO: speed up
             self.recreate_target()
 
@@ -43,10 +46,7 @@ class GameArea:
             self.__game_over = True
 
     def recreate_target(self) -> Target:
-        ramdom_empy_point = random.choice(self.__get_empy_field_points())
-
-        # TODO: if we have not empty points it is a victory
-
+        ramdom_empy_point = random.choice(self.__get_empy_field_points()) # TODO: if we have not empty points it is a victory
         self.__target = Target(ramdom_empy_point[0], ramdom_empy_point[1])
 
         return self.__target

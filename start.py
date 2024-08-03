@@ -36,9 +36,6 @@ def update(game_area: GameArea):
             snake.set_direction(command)
 
     game_area.check_updates()
-    game_over = game_area.game_over
-
-    # if game_over:
 
     keydown_event.clear()
 
@@ -52,6 +49,10 @@ def run():
     while True:
         processInput()
         update(game_area)
+
+        if game_area.game_over:
+            exit()
+
         render.render()
 
 

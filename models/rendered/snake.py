@@ -1,10 +1,10 @@
+import copy
+
 import pygame
 from pygame import Rect
 import configuration as c
 import time
-import itertools
 
-from exceptions.exceptions import GameOverException
 from models.rendered.base_rendered_model import BaseRenderedModel
 
 
@@ -23,16 +23,23 @@ class Snake(BaseRenderedModel):
         self.__direction = direction
         self.__create_snake(position[0], position[1])
         self.__last_time = time.time()
+        self.speed_coefficient = 3
 
     def render(self, screen: pygame.Surface):
         for rec in self.__body:
             pygame.draw.rect(screen, c.SNAKE_COLOR, rec)
+
+    def grow(self):
+        self.__body.append(
+            copy.deepcopy(self.__body[-1])
+        )
+
     @property
     def length(self):
         return self.__length
     @property
     def body(self):
-        steps = int(time.time() - self.__last_time)
+        steps = int((time.time() - self.__last_time) * self.speed_coefficient)
 
         if steps == 0:  # changer nothing
             return self.__body
