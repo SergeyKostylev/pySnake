@@ -5,6 +5,7 @@ import sys
 
 from app.render import Render
 from models.game_area import GameArea
+from app.game_area_builder import build_game_area
 
 
 keydown_event = []
@@ -43,7 +44,8 @@ def update(game_area: GameArea):
 
 def run():
     screen = pygame.display.set_mode(c.SCREEN_SIZE)
-    game_area = GameArea()
+    game_area = build_game_area()
+
     render = Render(game_area, screen)
 
     while True:
