@@ -3,7 +3,6 @@ import copy
 import pygame
 from pygame import Rect
 import configuration as c
-import time
 
 from models.rendered.base_rendered_model import BaseRenderedModel
 
@@ -16,14 +15,13 @@ class Snake(BaseRenderedModel):
 
     PIECE_SIZE = c.FIELD_POINT_SIZE
 
-    def __init__(self, length: int = 3, position=(300, 300), direction=DIRECTION_RIGHT):
+    def __init__(self, length: int = 10, position=(300, 300), direction=DIRECTION_RIGHT):
         self.__body: list[Rect] = []
         self.__validate_direction(direction)
-        self.__length = length
         self.__direction = direction
-        self.__create_body(position[0], position[1])
-        self.__last_time = time.time()
-        self.speed_coefficient = 3
+        self.__requested_directions = []
+        self.__create_body(position[0], position[1], length)
+        self.__speed = 300
 
     def render(self, screen: pygame.Surface):
         for rec in self.__body:
@@ -35,17 +33,18 @@ class Snake(BaseRenderedModel):
         )
 
     @property
-    def length(self):
-        return self.__length
-    @property
-    def body(self):
-        steps = int((time.time() - self.__last_time) * self.speed_coefficient)
+    def speed(self):
+        return self.__speed
 
-        if steps == 0:  # changer nothing
-            return self.__body
+    def do_step(self):
+
+        if len(self.__requested_directions) > 0:
+            direction = self.__requested_directions.pop(0)
+        else:
+            direction = self.__direction
 
         x, y = [0, 0]
-        match self.__direction:
+        match direction:
             case self.DIRECTION_UP:
                 y = -self.PIECE_SIZE
             case self.DIRECTION_DOWN:
@@ -57,20 +56,33 @@ class Snake(BaseRenderedModel):
             case _:
                 ValueError(f"Invalid direction '{self.__direction}'")
 
-        for _ in range(steps):
-            tail = self.__body.pop()
-            tail.x = self.__body[0].x + x
-            tail.y = self.__body[0].y + y
-            self.__body.insert(0, tail)
+        tail = self.__body.pop()
+        tail.x = self.__body[0].x + x
+        tail.y = self.__body[0].y + y
+        self.__body.insert(0, tail)
 
-        self.__last_time = time.time()
+        self.__direction = direction
+        pass
 
+    @property
+    def body(self):
         return self.__body
 
     def set_direction(self, direction):
-        self.__validate_direction(direction)
+        requested_directions_len = len(self.__requested_directions)
+        if requested_directions_len >= 2:
+            return
 
-        common_and_pretend = sorted([self.__direction, direction])
+        self.__validate_direction(direction)
+        previous_direction = self.__requested_directions[0] if requested_directions_len > 0 else self.__direction
+
+        if self.__is_opposite_directions(previous_direction, direction):
+            return
+
+        self.__requested_directions.append(direction)
+
+    def __is_opposite_directions(self, directionOne, directionTwo):
+        common_and_pretend = sorted([directionOne, directionTwo])
         mutually_exclusive = [
             sorted([self.DIRECTION_UP, self.DIRECTION_DOWN]),
             sorted([self.DIRECTION_LEFT, self.DIRECTION_RIGHT]),
@@ -78,10 +90,9 @@ class Snake(BaseRenderedModel):
 
         for pair in mutually_exclusive:
             if common_and_pretend == pair:
-                return  # can't switch up -> down, down -> up, ...
+                return True  # can't switch up -> down, down -> up, ...
 
-        self.__direction = direction
-        print(direction)
+        return False
 
     def snake_intersection(self) -> bool:
         head = self.__body[0]
@@ -91,14 +102,14 @@ class Snake(BaseRenderedModel):
 
         return False
 
-    def __create_body(self, head_x, head_y):
+    def __create_body(self, head_x: int, head_y: int, length: int):
         self.__body = [
             self.__get_new_snake_piece(head_x, head_y)
         ]
 
         loop_x, loop_y = [head_x, head_y]
 
-        for _ in range(self.__length - 1):
+        for _ in range(length - 1):
             match self.__direction:
                 case self.DIRECTION_UP:
                     loop_y = loop_y + self.PIECE_SIZE
