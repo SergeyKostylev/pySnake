@@ -15,13 +15,13 @@ class Snake(BaseRenderedModel):
 
     PIECE_SIZE = c.FIELD_POINT_SIZE
 
-    def __init__(self, length: int = 10, position=(300, 300), direction=DIRECTION_RIGHT):
+    def __init__(self, length: int = 2, position=(300, 300), direction=DIRECTION_RIGHT):
         self.__body: list[Rect] = []
         self.__validate_direction(direction)
         self.__direction = direction
         self.__requested_directions = []
         self.__create_body(position[0], position[1], length)
-        self.__speed = 300
+        self.__speed = 500
 
     def render(self, screen: pygame.Surface):
         for rec in self.__body:
@@ -35,6 +35,9 @@ class Snake(BaseRenderedModel):
     @property
     def speed(self):
         return self.__speed
+
+    def speed_up(self):
+        self.__speed = int(self.__speed * 0.9)
 
     def do_step(self):
 
@@ -70,7 +73,7 @@ class Snake(BaseRenderedModel):
 
     def set_direction(self, direction):
         requested_directions_len = len(self.__requested_directions)
-        if requested_directions_len >= 2:
+        if requested_directions_len >= 2:  # only 2 request can be set
             return
 
         self.__validate_direction(direction)

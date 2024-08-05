@@ -20,11 +20,6 @@ def build_game_area() -> GameArea:
 def build_snake(snake_field: SnakeField) -> Snake:
     snake_field_center_position = snake_field.get_center_point()
 
-    snake_field_center_position = (  # TODO: remove after testing FOR
-        snake_field_center_position[0] + 120,
-        snake_field_center_position[1]
-    )
-
     return Snake(position=snake_field_center_position)
 
 

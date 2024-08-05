@@ -37,7 +37,6 @@ class GameArea:
         while len(self.__snake_turn_commands_queue) != 0:
             self.__snake.set_direction(self.__snake_turn_commands_queue.pop(0))
 
-
         if (pygame.time.get_ticks() > self.__state.last_snake_moving_time + self.__snake.speed):
             self.__state.update_last_snake_moving_time()
             self.__snake.do_step()
@@ -47,6 +46,7 @@ class GameArea:
         if head.colliderect(self.__target.body):  # snake head on target position
             self.__statistics.add_eat_target()
             self.__snake.grow()
+            self.__snake.speed_up()
 
             self.edit_target_place()
 
