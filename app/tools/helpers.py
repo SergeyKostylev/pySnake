@@ -1,9 +1,9 @@
 import random
 
-import configuration as conf
-from models.rendered.snake import Snake
-from models.rendered.target import Target
-from models.rendered.snake_field import SnakeField
+from app import configuration as conf
+from app.models.rendered.snake import Snake
+from app.models.rendered.target import Target
+from app.models.rendered.snake_field import SnakeField
 
 
 def get_random_empy_field_point(snake_field: SnakeField, snake: Snake = None, target: Target = None) -> tuple[int, int]:

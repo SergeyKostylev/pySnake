@@ -1,11 +1,11 @@
 import pygame
 
-from models.GameAreaState import GameAreaState
-from models.running_game_statistics import RunningGameStatistics
-from models.rendered.snake import Snake
-from models.rendered.snake_field import SnakeField
-from models.rendered.target import Target
-from services.helpers import get_random_empy_field_point
+from app.models.game_area_state import GameAreaState
+from app.models.running_game_statistics import RunningGameStatistics
+from app.models.rendered.snake import Snake
+from app.models.rendered.snake_field import SnakeField
+from app.models.rendered.target import Target
+from app.tools.helpers import get_random_empy_field_point
 
 
 class GameArea:
