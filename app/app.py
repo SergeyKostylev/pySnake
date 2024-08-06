@@ -1,12 +1,12 @@
 import sys
 
 import pygame
-import configuration as conf
-from app.render import Render
-from models.game_area import GameArea
-from models.rendered.snake import Snake
-from models.rendered.info_bar import InfoBar
-from app.game_area_builder import build_game_area, build_info_bar
+from app import configuration as conf
+from app.tools.render import Render
+from app.models.game_area import GameArea
+from app.models.rendered.snake import Snake
+from app.models.rendered.info_bar import InfoBar
+from app.tools.game_area_builder import build_game_area, build_info_bar
 
 
 class App:

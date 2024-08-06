@@ -1,11 +1,11 @@
-from models.game_area import GameArea
-from models.rendered.info_bar import InfoBar
-from models.rendered.snake import Snake
-from models.rendered.snake_field import SnakeField
+from app.models.game_area import GameArea
+from app.models.rendered.info_bar import InfoBar
+from app.models.rendered.snake import Snake
+from app.models.rendered.snake_field import SnakeField
 
-import configuration as conf
-from models.rendered.target import Target
-from services.helpers import get_random_empy_field_point
+from app import configuration as conf
+from app.models.rendered.target import Target
+from app.tools.helpers import get_random_empy_field_point
 
 
 def build_game_area() -> GameArea:

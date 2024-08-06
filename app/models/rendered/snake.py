@@ -2,9 +2,9 @@ import copy
 
 import pygame
 from pygame import Rect
-import configuration as c
+from app import configuration as c
 
-from models.rendered.base_rendered_model import BaseRenderedModel
+from app.models.rendered.base_rendered_model import BaseRenderedModel
 
 
 class Snake(BaseRenderedModel):

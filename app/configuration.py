@@ -1,4 +1,4 @@
-from exceptions.exceptions import ConfigValueException
+from app.tools.exceptions import ConfigValueException
 
 SCREEN_SIZE = (600, 400)
 SNAKE_FIELD_SIZE = (400, 360)

@@ -1,8 +1,8 @@
 import pygame
-import configuration as c
+from app import configuration as c
 
-from models.game_area import GameArea
-from models.rendered.info_bar import InfoBar
+from app.models.game_area import GameArea
+from app.models.rendered.info_bar import InfoBar
 
 
 class Render:
