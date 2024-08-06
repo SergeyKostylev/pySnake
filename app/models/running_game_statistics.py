@@ -1,6 +1,3 @@
-from collections import Counter
-
-
 class RunningGameStatistics:
 
     def __init__(self):
@@ -8,11 +5,8 @@ class RunningGameStatistics:
         self.__speed = None
 
     @property
-    def target_eat_count(self):
+    def achieved_target_count(self):
         return self.__achieved_target_count
-
-    def add_eat_target(self):
-        self.__achieved_target_count += 1
 
     @property
     def speed(self):
@@ -21,3 +15,6 @@ class RunningGameStatistics:
     @speed.setter
     def speed(self, speed):
         self.__speed = speed
+
+    def add_achieved_target(self):
+        self.__achieved_target_count += 1

@@ -1,9 +1,5 @@
-import sys
-import time
-
 import pygame
 from pygame import Rect
-
 from app import configuration as conf
 
 from app.models.rendered.base_rendered_model import BaseRenderedModel

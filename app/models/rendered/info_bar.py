@@ -1,6 +1,6 @@
+import pygame
 from time import time
 from datetime import datetime
-import pygame
 from pygame import Rect
 from app import configuration as conf
 from app.models.rendered.base_rendered_model import BaseRenderedModel

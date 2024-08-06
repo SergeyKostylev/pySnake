@@ -1,5 +1,4 @@
 import copy
-
 import pygame
 from pygame import Rect
 from app import configuration as conf
@@ -65,7 +64,6 @@ class Snake(BaseRenderedModel):
         self.__body.insert(0, tail)
 
         self.__direction = direction
-        pass
 
     @property
     def body(self):
@@ -135,7 +133,3 @@ class Snake(BaseRenderedModel):
     def __validate_direction(self, direction):
         if direction not in [self.DIRECTION_UP, self.DIRECTION_DOWN, self.DIRECTION_LEFT, self.DIRECTION_RIGHT]:
             raise ValueError(f"Invalid direction '{direction}'")
-
-
-if __name__ == '__main__':
-    pass

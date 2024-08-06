@@ -1,6 +1,5 @@
-from abc import ABC, abstractmethod
-
 import pygame
+from abc import ABC, abstractmethod
 
 
 class BaseRenderedModel(ABC):

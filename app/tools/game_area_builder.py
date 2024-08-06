@@ -12,8 +12,8 @@ def build_game_area() -> GameArea:
     snake_field = build_snake_field()
     snake = build_snake(snake_field)
 
-    point = get_random_empy_field_point(snake_field, snake)
-    target = build_target(point)
+    target_point = get_random_empy_field_point(snake_field, snake)
+    target = build_target(target_point)
 
     return GameArea(snake, snake_field, target)
 
@@ -44,12 +44,12 @@ def build_target(point: tuple[int, int]) -> Target:
 
 
 def build_info_bar() -> InfoBar:
-    y = get_y_for_snake_field_and_info_bar()
-
     snake_field_x_left = get_x_for_snake_field()
     snake_field_x_right = conf.SNAKE_FIELD_SIZE[0] + snake_field_x_left
     empty_size = (conf.SCREEN_SIZE[0] - snake_field_x_right - conf.INFO_BAR_SIZE[0])
+
     x = snake_field_x_right + (empty_size - snake_field_x_left)
+    y = get_y_for_snake_field_and_info_bar()
 
     return InfoBar(conf.INFO_BAR_SIZE[0], conf.INFO_BAR_SIZE[1], x, y)
 

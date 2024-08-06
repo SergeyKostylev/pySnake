@@ -11,9 +11,9 @@ class Target(BaseRenderedModel):
     def __init__(self, x, y):
         self.__body = Rect(x, y, self.TARGET_SIZE, self.TARGET_SIZE)
 
-    def render(self, screen):
-        pygame.draw.rect(screen, c.TARGET_COLOR, self.__body)
-
     @property
     def body(self):
         return self.__body
+
+    def render(self, screen):
+        pygame.draw.rect(screen, c.TARGET_COLOR, self.__body)

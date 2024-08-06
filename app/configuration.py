@@ -24,6 +24,7 @@ DIALOG_WINDOW_TEXT_COLOR = (65, 105, 225)
 
 FPS = 60
 
+
 def validate_configuration() -> None:
     screen_size = SCREEN_SIZE
     snake_field_size = SNAKE_FIELD_SIZE
