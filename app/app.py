@@ -1,6 +1,4 @@
 import sys
-import time
-
 import pygame
 from app import configuration as conf
 from app.models.rendered.game_over_window import GameOverWindow
@@ -51,9 +49,9 @@ class App:
             self.__game_area.add_snake_turn_command(self.__snake_command_buf.pop(0))
 
         self.__game_area.update_area()
-        stata = self.__game_area.statistics
 
-        self.__info_bar.set_target_amount(stata.target_eat_count)
+        stata = self.__game_area.statistics
+        self.__info_bar.set_target_amount(stata.achieved_target_count)
         self.__info_bar.set_speed(stata.speed)
 
     def process_input(self) -> None:

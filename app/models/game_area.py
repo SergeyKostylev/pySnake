@@ -18,9 +18,6 @@ class GameArea:
         self.__snake_turn_commands_queue = []
         self.__state = GameAreaState()
 
-    def get_all_entities(self):
-        return self.__snake_field, self.__snake, self.__target
-
     @property
     def snake(self):
         return self.__snake
@@ -34,6 +31,9 @@ class GameArea:
         speed_value = self.__snake.speed
         self.__statistics.speed = int((1000 - speed_value) / 10)
         return self.__statistics
+
+    def get_all_entities(self):
+        return self.__snake_field, self.__snake, self.__target
 
     def add_snake_turn_command(self, snake_command):
         self.__snake_turn_commands_queue.append(snake_command)
@@ -49,7 +49,7 @@ class GameArea:
         head = self.__snake.body[0]
 
         if head.colliderect(self.__target.body):  # snake head on target position
-            self.__statistics.add_eat_target()
+            self.__statistics.add_achieved_target()
             self.__snake.grow()
             self.__snake.speed_up()
 
