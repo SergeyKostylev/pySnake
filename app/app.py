@@ -1,7 +1,9 @@
 import sys
+import time
 
 import pygame
 from app import configuration as conf
+from app.models.rendered.game_over_window import GameOverWindow
 from app.tools.render import Render
 from app.models.game_area import GameArea
 from app.models.rendered.snake import Snake
@@ -13,49 +15,52 @@ class App:
     interval = 1000 // conf.FPS
 
     def __init__(self):
-        self.__snake_command_buf = []
+        self.__snake_command_buf: list = None
+        self.__game_area: GameArea = None
+        self.__info_bar: InfoBar = None
 
-        pass
+        screen = pygame.Surface = pygame.display.set_mode(conf.SCREEN_SIZE)
+        self.__render = Render(screen)
 
     def run(self):
         conf.validate_configuration()
         pygame.init()
-        screen = pygame.display.set_mode(conf.SCREEN_SIZE)
-        game_area = build_game_area()
-        info_bar = build_info_bar()
-
-        render = Render(game_area, info_bar, screen)
+        self.__reinit_properties()
 
         threshold = pygame.time.get_ticks() + self.interval
 
         while True:
-            if game_area.game_over:
-                exit()
+            if self.__game_area.game_over:
+                self.__game_over_behavior()
 
             current_time = pygame.time.get_ticks()
+
             self.process_input()
-            self.update(game_area, info_bar)
+            self.update()
 
             if current_time > threshold:
-                render.render()
+                self.__render.fill_background()
+                self.__render.render(*self.__game_area.get_all_entities())
+                self.__render.render(self.__info_bar)
+                self.__render.flip_display()
+
                 threshold += self.interval
 
-    def update(self, game_area: GameArea, info_bar: InfoBar):
+    def update(self):
         while len(self.__snake_command_buf) != 0:
-            game_area.add_snake_turn_command(self.__snake_command_buf.pop(0))
+            self.__game_area.add_snake_turn_command(self.__snake_command_buf.pop(0))
 
-        game_area.update_area()
-        stata = game_area.statistics
+        self.__game_area.update_area()
+        stata = self.__game_area.statistics
 
-        info_bar.set_target_amount(stata.target_eat_count)
-        info_bar.set_speed(stata.speed)
+        self.__info_bar.set_target_amount(stata.target_eat_count)
+        self.__info_bar.set_speed(stata.speed)
 
     def process_input(self) -> None:
         for event in pygame.event.get():
 
             if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
+                self.exit()
 
             elif event.type == pygame.KEYDOWN:
                 snake_command = None
@@ -70,3 +75,22 @@ class App:
                         snake_command = Snake.DIRECTION_RIGHT
                 if snake_command is not None:
                     self.__snake_command_buf.append(snake_command)
+
+    def __reinit_properties(self):
+        self.__snake_command_buf = []
+        self.__game_area: GameArea = build_game_area()
+        self.__info_bar = build_info_bar()
+
+    def __game_over_behavior(self):
+        game_over_window = GameOverWindow()
+        self.__render.render(game_over_window)
+        self.__render.flip_display()
+
+        if game_over_window.start_new_game():
+            self.__reinit_properties()
+        else:
+            self.exit()
+
+    def exit(self):
+        pygame.quit()
+        sys.exit()

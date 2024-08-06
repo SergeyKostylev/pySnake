@@ -26,7 +26,7 @@ def build_snake(snake_field: SnakeField) -> Snake:
         round_to_point_size(snake_field_center_position[1])
     )
 
-    return Snake(position=position)
+    return Snake(position=position, length=conf.SNAKE_START_LENGTH)
 
 
 def build_snake_field() -> SnakeField:

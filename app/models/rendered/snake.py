@@ -2,7 +2,7 @@ import copy
 
 import pygame
 from pygame import Rect
-from app import configuration as c
+from app import configuration as conf
 
 from app.models.rendered.base_rendered_model import BaseRenderedModel
 
@@ -13,19 +13,19 @@ class Snake(BaseRenderedModel):
     DIRECTION_LEFT = 'left'
     DIRECTION_RIGHT = 'right'
 
-    PIECE_SIZE = c.FIELD_POINT_SIZE
+    PIECE_SIZE = conf.FIELD_POINT_SIZE
 
-    def __init__(self, length: int = 2, position=(300, 300), direction=DIRECTION_RIGHT):
+    def __init__(self, position: tuple[int, int], length, direction=DIRECTION_RIGHT):
         self.__body: list[Rect] = []
         self.__validate_direction(direction)
         self.__direction = direction
         self.__requested_directions = []
         self.__create_body(position[0], position[1], length)
-        self.__speed = 500
+        self.__speed = conf.SNAKE_START_SPEED
 
     def render(self, screen: pygame.Surface):
         for rec in self.__body:
-            pygame.draw.rect(screen, c.SNAKE_COLOR, rec)
+            pygame.draw.rect(screen, conf.SNAKE_COLOR, rec)
 
     def grow(self):
         self.__body.append(

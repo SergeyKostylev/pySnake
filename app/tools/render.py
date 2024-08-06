@@ -1,26 +1,27 @@
 import pygame
 from app import configuration as c
 
-from app.models.game_area import GameArea
-from app.models.rendered.info_bar import InfoBar
+from app.models.rendered.base_rendered_model import BaseRenderedModel
 
 
 class Render:
-    def __init__(self, game_area: GameArea, info_bar: InfoBar, screen):
+    def __init__(self, screen: pygame.Surface):
         self.__screen = screen
-        self.__game_area = game_area
-        self.__info_bar = info_bar
 
-    def render(self):
-        screen = self.__screen
-        snake_field, snake, target = self.__game_area.get_all_entities()
+    @property
+    def screen(self):
+        return self.__screen
 
-        screen.fill(c.SCREEN_BACKGROUND_COLOR)
+    def fill_background(self):
+        self.__screen.fill(c.SCREEN_BACKGROUND_COLOR)
 
-        snake_field.render(screen)
-        target.render(screen)
-        snake.render(screen)
+        return self
 
-        self.__info_bar.render(screen)
+    def render(self, *args: BaseRenderedModel):
+        for model in args:
+            model.render(self.__screen)
 
+        return self
+
+    def flip_display(self):
         pygame.display.flip()
