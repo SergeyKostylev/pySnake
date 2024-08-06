@@ -2,10 +2,11 @@ import sys
 
 import pygame
 import configuration as conf
-from app.game_area_builder import build_game_area
 from app.render import Render
 from models.game_area import GameArea
 from models.rendered.snake import Snake
+from models.rendered.info_bar import InfoBar
+from app.game_area_builder import build_game_area, build_info_bar
 
 
 class App:
@@ -20,29 +21,34 @@ class App:
         conf.validate_configuration()
         pygame.init()
         screen = pygame.display.set_mode(conf.SCREEN_SIZE)
-
         game_area = build_game_area()
-        render = Render(game_area, screen)
+        info_bar = build_info_bar()
+
+        render = Render(game_area, info_bar, screen)
 
         threshold = pygame.time.get_ticks() + self.interval
 
         while True:
-            # if game_area.game_over:
-            #     exit()
+            if game_area.game_over:
+                exit()
 
             current_time = pygame.time.get_ticks()
             self.process_input()
-            self.update(game_area)
+            self.update(game_area, info_bar)
 
             if current_time > threshold:
                 render.render()
                 threshold += self.interval
 
-    def update(self, game_area: GameArea):
+    def update(self, game_area: GameArea, info_bar: InfoBar):
         while len(self.__snake_command_buf) != 0:
             game_area.add_snake_turn_command(self.__snake_command_buf.pop(0))
 
-        game_area.update_area_and_check()
+        game_area.update_area()
+        stata = game_area.statistics
+
+        info_bar.set_target_amount(stata.target_eat_count)
+        info_bar.set_speed(stata.speed)
 
     def process_input(self) -> None:
         for event in pygame.event.get():

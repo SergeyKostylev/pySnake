@@ -29,11 +29,16 @@ class GameArea:
     def game_over(self):
         return self.__game_over
 
+    @property
+    def statistics(self) -> RunningGameStatistics:
+        speed_value = self.__snake.speed
+        self.__statistics.speed = int((1000 - speed_value) / 10)
+        return self.__statistics
+
     def add_snake_turn_command(self, snake_command):
         self.__snake_turn_commands_queue.append(snake_command)
 
-    def update_area_and_check(self) -> None:
-
+    def update_area(self) -> None:
         while len(self.__snake_turn_commands_queue) != 0:
             self.__snake.set_direction(self.__snake_turn_commands_queue.pop(0))
 
