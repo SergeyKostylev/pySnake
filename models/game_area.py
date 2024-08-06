@@ -1,19 +1,22 @@
 import pygame
-import configuration as const
+
+from models.GameAreaState import GameAreaState
 from models.running_game_statistics import RunningGameStatistics
 from models.rendered.snake import Snake
 from models.rendered.snake_field import SnakeField
 from models.rendered.target import Target
-import random
+from services.helpers import get_random_empy_field_point
 
 
 class GameArea:
-    def __init__(self):
-        self.__snake_field = self.__build_snake_field()
-        self.__snake = self.__build_snake()
-        self.__target = self.recreate_target()
+    def __init__(self, snake: Snake, snake_field: SnakeField, target: Target):
+        self.__snake_field = snake_field
+        self.__snake = snake
+        self.__target = target
         self.__statistics = RunningGameStatistics()
         self.__game_over = False
+        self.__snake_turn_commands_queue = []
+        self.__state = GameAreaState()
 
     def get_all_entities(self):
         return self.__snake_field, self.__snake, self.__target
@@ -26,17 +29,31 @@ class GameArea:
     def game_over(self):
         return self.__game_over
 
-    def check_updates(self) -> None:
+    @property
+    def statistics(self) -> RunningGameStatistics:
+        speed_value = self.__snake.speed
+        self.__statistics.speed = int((1000 - speed_value) / 10)
+        return self.__statistics
+
+    def add_snake_turn_command(self, snake_command):
+        self.__snake_turn_commands_queue.append(snake_command)
+
+    def update_area(self) -> None:
+        while len(self.__snake_turn_commands_queue) != 0:
+            self.__snake.set_direction(self.__snake_turn_commands_queue.pop(0))
+
+        if (pygame.time.get_ticks() > self.__state.last_snake_moving_time + self.__snake.speed):
+            self.__state.update_last_snake_moving_time()
+            self.__snake.do_step()
+
         head = self.__snake.body[0]
 
         if head.colliderect(self.__target.body):  # snake head on target position
             self.__statistics.add_eat_target()
             self.__snake.grow()
+            self.__snake.speed_up()
 
-            self.__snake.speed_coefficient += 0.7
-            print(self.__snake.speed_coefficient)
-
-            self.recreate_target()
+            self.edit_target_place()
 
         if not head.colliderect(self.__snake_field.field):  # snake outside field
             self.__game_over = True
@@ -44,47 +61,8 @@ class GameArea:
         if self.__snake.snake_intersection():
             self.__game_over = True
 
-    def recreate_target(self) -> Target:
-        ramdom_empy_point = random.choice(self.__get_empy_field_points()) # TODO: if we have not empty points it is a victory
-        self.__target = Target(ramdom_empy_point[0], ramdom_empy_point[1])
-
-        return self.__target
-
-    def __build_snake(self) -> Snake:
-        snake_field_center_position = self.__snake_field.get_center_point()
-
-        snake_field_center_position = (  # TODO: remove after testing FOR
-            snake_field_center_position[0] + 120,
-            snake_field_center_position[1]
-        )
-
-        return Snake(position=snake_field_center_position)
-
-    def __get_empy_field_points(self):
-        snake_field_rect = self.__snake_field.field
-        field_x_from = snake_field_rect.x
-        field_y_from = snake_field_rect.y
-        field_x_to = snake_field_rect.width + field_x_from
-        field_y_to = snake_field_rect.height + field_y_from
-
-        filled_filed_points = []
-        for piece in self.__snake.body:
-            filled_filed_points.append((piece.x, piece.y))
-
-        empty_filed_points = []
-        for i in range(field_x_from, field_x_to, const.FIELD_POINT_SIZE):
-            for j in range(field_y_from, field_y_to, const.FIELD_POINT_SIZE):
-                point = (i, j)
-                if point not in filled_filed_points:
-                    empty_filed_points.append(point)
-
-        return empty_filed_points
-
-    def __build_snake_field(self) -> SnakeField:
-        screen_size = const.SCREEN_SIZE
-        field_size = const.SNAKE_FIELD_SIZE
-        # x = (screen_size[0] - field_size[0]) // 2
-        x = 20  # temporary  solution
-        y = (screen_size[1] - field_size[1]) // 2
-
-        return SnakeField(const.SNAKE_FIELD_SIZE[0], const.SNAKE_FIELD_SIZE[1], x, y)
+    def edit_target_place(self):
+        point = get_random_empy_field_point(self.__snake_field, self.__snake)
+        # TODO: if we have not empty points it is a victory
+        self.__target.body.x = point[0]
+        self.__target.body.y = point[1]
