@@ -6,6 +6,7 @@ Welcome to the classic Snake Game implemented in Python using Pygame!
 - [Introduction](#introduction)
 - [Features](#features)
 - [Installation](#installation)
+- [Configuration](#configuration)
 
 ## Introduction
 
@@ -18,6 +19,11 @@ The Snake Game is a timeless classic where the player controls a snake to eat fo
 - Simple and intuitive controls
 - Score tracking
 
+## Configuration
+To change the field sizes, colors, initial settings, etc., change the corresponding settings in the file
+_app/configuration.py_
+During startup, the application will check the configuration settings for compatibility with each other.
+And in case of an error, an exception will be thrown with the message
 ## Installation
 
 To run the Snake Game, you need to have Python and Pygame installed on your system or create a virtual environment.
